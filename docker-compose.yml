@@ -10,9 +10,9 @@ services:
       MYSQL_DATABASE: $DB_NAME
       MYSQL_USER: $DB_USER
       MYSQL_PASSWORD: $DB_PASSWORD
-    volumes:
+    #volumes:
 #      - ./mariadb-init:/docker-entrypoint-initdb.d # Place init .sql file(s) here.
-      - ./docker/services/mysql/var/lib/mysql:/var/lib/mysql:delegated # I want to manage volumes manually. Explain delegated.
+      #- ./docker/services/mysql/var/lib/mysql:/var/lib/mysql # I want to manage volumes manually. Explain delegated.
 
   php:
     build:
