@@ -1,12 +1,11 @@
 {
-    "name": "drupal-composer/drupal-project",
-    "description": "Project template for Drupal 8 projects with composer",
+    "name": "cleverhoods/drupal-docker-project",
+    "description": "Drupal 8 dockerisation built on wodby images.",
     "type": "project",
-    "license": "GPL-2.0-or-later",
+    "license": "MIT",
     "authors": [
         {
-            "name": "",
-            "role": ""
+            "name": "Gábor Mészáros"
         }
     ],
     "repositories": [
