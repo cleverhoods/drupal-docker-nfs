@@ -10,14 +10,11 @@ services:
       MYSQL_DATABASE: $DB_NAME
       MYSQL_USER: $DB_USER
       MYSQL_PASSWORD: $DB_PASSWORD
-    #volumes:
-#      - ./mariadb-init:/docker-entrypoint-initdb.d # Place init .sql file(s) here.
-      #- ./docker/services/mysql/var/lib/mysql:/var/lib/mysql # I want to manage volumes manually. Explain delegated.
+    volumes:
+      - mariadb:/var/lib/mysql # I want to manage volumes manually. Explain delegated.
 
   php:
-    build:
-      context: ./docker/images/drupal-php-frontend
-    image: oneshoe/drupal-php:$PHP_TAG
+    image: wodby/drupal-php:$PHP_TAG
     container_name: "${PROJECT_NAME}_php"
     environment:
       PHP_SENDMAIL_PATH: /usr/sbin/sendmail -t -i -S mailhog:1025
@@ -26,18 +23,8 @@ services:
       DB_PASSWORD: $DB_PASSWORD
       DB_NAME: $DB_NAME
       DB_DRIVER: $DB_DRIVER
-#      PHP_XDEBUG: 1
-#      PHP_XDEBUG_DEFAULT_ENABLE: 1
-#      PHP_XDEBUG_REMOTE_CONNECT_BACK: 0
-#      PHP_XDEBUG_REMOTE_HOST: "10.254.254.254"
-#      PHP_BLACKFIRE: 1
     volumes:
-#      - ./:/var/www/html
-## For macOS users (https://wodby.com/stacks/drupal/docs/local/docker-for-mac/)
       - ./:/var/www/html:cached # User-guided caching
-#      - docker-sync:/var/www/html # Docker-sync
-## For Xdebug profiler files
-#      - files:/mnt/files
 
   mailhog:
     image: mailhog/mailhog
@@ -47,66 +34,22 @@ services:
       - 'traefik.port=8025'
       - 'traefik.frontend.rule=Host:mailhog.${PROJECT_BASE_URL}'
 
-  apache:
-    image: wodby/php-apache:$APACHE_TAG
-    container_name: "${PROJECT_NAME}_apache"
+  nginx:
+    image: wodby/drupal-nginx:$NGINX_TAG
+    container_name: "${PROJECT_NAME}_nginx"
     depends_on:
       - php
     environment:
-      APACHE_LOG_LEVEL: debug
-      APACHE_BACKEND_HOST: php
-      APACHE_SERVER_ROOT: /var/www/html/web
+      NGINX_STATIC_CONTENT_OPEN_FILE_CACHE: "off"
+      NGINX_ERROR_LOG_LEVEL: debug
+      NGINX_BACKEND_HOST: php
+      NGINX_SERVER_ROOT: /var/www/html/web
     volumes:
-#      - ./:/var/www/html
-## For macOS users (https://wodby.com/stacks/drupal/docs/local/docker-for-mac/)
       - ./:/var/www/html:cached # User-guided caching
-      - ./docker/services/apache2/conf/conf.d:/usr/local/apache2/conf/conf.d:delegated
-##      - docker-sync:/var/www/html # Docker-sync
     labels:
-      - 'traefik.backend=apache'
+      - 'traefik.backend=nginx'
       - 'traefik.port=80'
       - 'traefik.frontend.rule=Host:${PROJECT_BASE_URL}'
-
-  adminer:
-    container_name: "${PROJECT_NAME}_adminer"
-    image: wodby/adminer:$ADMINER_TAG
-    environment:
-      ADMINER_SALT: factory-adminer-salt
-    labels:
-      - 'traefik.backend=adminer'
-      - 'traefik.port=9000'
-      - 'traefik.frontend.rule=Host:adminer.${PROJECT_BASE_URL}'
-
-#  nodejs:
-#    image: wodby/drupal-node:$DRUPAL_NODE_TAG
-#    container_name: "${PROJECT_NAME}_drupal_nodejs"
-#    environment:
-#       NODE_SERVICE_KEY: node-service-key
-#    labels:
-#      - 'traefik.backend=nodejs'
-#      - 'traefik.port=8080'
-#      - 'traefik.frontend.rule=Host:nodejs.${PROJECT_BASE_URL}'
-#    volumes:
-#      - ./path/to/your/single-page-app:/app
-#    command: sh -c 'npm install && npm run start'
-
-#  memcached:
-#    container_name: "${PROJECT_NAME}_memcached"
-#    image: wodby/memcached:$MEMCACHED_TAG
-
-#  node:
-#    image: node:alpine
-#    container_name: "${PROJECT_NAME}_node"
-#    working_dir: /app
-#    labels:
-#      - 'traefik.backend=node'
-#      - 'traefik.port=3000'
-#      - 'traefik.frontend.rule=Host:front.${PROJECT_BASE_URL}'
-#    expose:
-#      - "3000"
-#    volumes:
-#      - ./path/to/your/single-page-app:/app
-#    command: sh -c 'npm install && npm run start'
 
   portainer:
     image: portainer/portainer
@@ -124,14 +67,15 @@ services:
     container_name: "${PROJECT_NAME}_traefik"
     command: -c /dev/null --web --docker --logLevel=INFO
     ports:
-      - '8000:80'
+      - '80:80'
 #      - '8080:8080' # Dashboard
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
-#volumes:
-## Docker-sync for macOS users
-#  docker-sync:
-#    external: true
-## For Xdebug profiler
-#  files:
+volumes:
+  mariadb:
+
+networks:
+  web:
+    external:
+      name: traefik_default
