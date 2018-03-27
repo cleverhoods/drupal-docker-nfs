@@ -55,3 +55,5 @@
  * @see \Drupal\Core\DrupalKernel::getSitePath()
  * @see https://www.drupal.org/documentation/install/multi-site
  */
+$sites['hu.sf.localhost'] = 'sf.hu';
+$sites['nl.sf.localhost'] = 'sf.nl';
