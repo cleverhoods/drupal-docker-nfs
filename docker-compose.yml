@@ -1,8 +1,5 @@
 version: "2"
 
-volumes:
-  mariadb:
-
 services:
   mariadb:
     image: wodby/mariadb:$MARIADB_TAG
@@ -37,7 +34,7 @@ services:
       - 'traefik.backend=mailhog'
       - 'traefik.port=8025'
       - 'traefik.frontend.rule=Host:mailhog.${PROJECT_BASE_URL}'
-      - "traefik.frontend.priority=1"
+      - "traefik.frontend.priority=2"
 
   nginx:
     image: wodby/drupal-nginx:$NGINX_TAG
@@ -55,7 +52,7 @@ services:
       - 'traefik.backend=nginx'
       - 'traefik.port=80'
       - 'traefik.frontend.rule=HostRegexp: ${PROJECT_BASE_URL}, {subdomain:[a-z0-9.]+localhost}'
-      - "traefik.frontend.priority=3"
+      - "traefik.frontend.priority=1"
 
   portainer:
     image: portainer/portainer
@@ -67,7 +64,7 @@ services:
       - 'traefik.backend=portainer'
       - 'traefik.port=9000'
       - 'traefik.frontend.rule=Host:portainer.${PROJECT_BASE_URL}'
-      - "traefik.frontend.priority=1"
+      - "traefik.frontend.priority=3"
 
   traefik:
     image: traefik
@@ -78,3 +75,6 @@ services:
       - '8080:8080' # Dashboard
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  mariadb:
