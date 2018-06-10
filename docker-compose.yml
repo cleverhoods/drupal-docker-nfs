@@ -11,11 +11,14 @@ services:
       MYSQL_USER: $DB_USER
       MYSQL_PASSWORD: $DB_PASSWORD
     volumes:
-      - ./init_mariadb:/docker-entrypoint-initdb.d # Place init .sql file(s) here.
-      - mariadb:/var/lib/mysql # I want to manage volumes manually. Explain delegated.
+      - ./init_mariadb:/docker-entrypoint-initdb.d
+      - mariadb:/var/lib/mysql
 
   php:
-    image: wodby/drupal-php:$PHP_TAG
+    build:
+      context: ./docker/images/drupal-php-frontend
+      args:
+        PHP_TAG: $PHP_TAG
     container_name: "${PROJECT_NAME}_php"
     environment:
       PHP_SENDMAIL_PATH: /usr/sbin/sendmail -t -i -S mailhog:1025
@@ -25,7 +28,12 @@ services:
       DB_NAME: $DB_NAME
       DB_DRIVER: $DB_DRIVER
     volumes:
-      - ./:/var/www/html:cached # User-guided caching
+      - ./web:/var/www/html/web:cached
+      - ./vendor:/var/www/html/vendor:delegated
+      - ./config:/var/www/html/config:cached
+      - ./scripts:/var/www/html/scripts:cached
+      - ./composer.json:/var/www/html/composer.json:cached
+      - ./composer.lock:/var/www/html/composer.lock:cached
 
   mailhog:
     image: mailhog/mailhog
@@ -47,7 +55,8 @@ services:
       NGINX_BACKEND_HOST: php
       NGINX_SERVER_ROOT: /var/www/html/web
     volumes:
-      - ./:/var/www/html:cached # User-guided caching
+      - ./web:/var/www/html/web:cached
+      - ./vendor:/var/www/html/vendor:delegated
     labels:
       - 'traefik.backend=nginx'
       - 'traefik.port=80'

@@ -1,7 +1,6 @@
-#ENV PHP_TAG = 7.1-dev-macos-4.2.2
-#FROM wodby/php:${PHP_TAG}
+ARG PHP_TAG
 
-FROM wodby/php:7.1-dev-macos-4.2.2
+FROM wodby/drupal-php:${PHP_TAG}
 
 USER root
 
@@ -10,3 +9,7 @@ RUN apk add --no-cache --update gcc g++ nodejs python
 
 # Install node packages
 RUN npm install --global gulp gulp-cli grunt webpack bower
+
+# Add the composer.json and lock files
+RUN touch /var/www/html/composer.json
+RUN touch /var/www/html/composer.lock
