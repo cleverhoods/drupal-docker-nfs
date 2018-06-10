@@ -1,6 +1,6 @@
 include .env
 
-.PHONY: up down stop prune ps shell drush logs
+.PHONY: up down stop prune ps shell drush logs backup
 
 default: up
 
@@ -32,6 +32,11 @@ drush:
 
 logs:
 	@docker-compose logs -f $(filter-out $@,$(MAKECMDGOALS))
+
+backup:
+	@echo "Creating database backup"
+	docker exec $(PROJECT_NAME)_mariadb /usr/bin/mysqldump -u $(DB_USER) --password=$(DB_PASSWORD) $(DB_NAME) > ./docker/data/backup.sql
+	@echo "Backup is saved to ./docker/data"
 
 # https://stackoverflow.com/a/6273809/1826109
 %:
