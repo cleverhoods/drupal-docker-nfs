@@ -1,13 +1,13 @@
-uuid: a4480908-5f81-4924-8e5f-1eeebcd1bef9
+uuid: 14e221b2-b797-4afb-9b59-ae4d08703e0a
 langcode: en
 status: true
 dependencies:
   theme:
-    - stark
+    - adminimal_theme
 _core:
-  default_config_hash: PffmQ-ABSz5tFjWmVsR7NesunDnEivvopnJnBjl8KNE
-id: stark_local_actions
-theme: stark
+  default_config_hash: ik4PTMlBD0MWansnSMpSXq5SUlWRJ1IVVt6C7AIbQmc
+id: adminimal_theme_local_actions
+theme: adminimal_theme
 region: content
 weight: -10
 provider: null

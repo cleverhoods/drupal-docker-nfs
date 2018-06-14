@@ -1,17 +1,17 @@
-uuid: 9d477835-430f-433a-8184-95b4b97fe0c7
+uuid: 7735d3aa-e6fb-4e7d-91f9-e2bc7dbc5adc
 langcode: en
 status: true
 dependencies:
   module:
     - user
   theme:
-    - stark
+    - adminimal_theme
 _core:
-  default_config_hash: 4QlSnWBcxxKMIFRM8sbu_MjSkcp3NjGgnVrc-lynQHI
-id: stark_login
-theme: stark
-region: sidebar_first
-weight: 0
+  default_config_hash: 862sIulDdHmF0vBU1s2j2_a_CwkxursrL0pIrMDzzOg
+id: adminimal_theme_login
+theme: adminimal_theme
+region: content
+weight: 10
 provider: null
 plugin: user_login_block
 settings:

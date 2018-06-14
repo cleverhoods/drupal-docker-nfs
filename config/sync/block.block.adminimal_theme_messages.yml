@@ -1,15 +1,15 @@
-uuid: 020f3dce-9abf-477c-b3a8-de8d346606f1
+uuid: 5d11d4de-205a-4890-bc1c-c3d4d9625d8f
 langcode: en
 status: true
 dependencies:
   module:
     - system
   theme:
-    - stark
+    - adminimal_theme
 _core:
-  default_config_hash: 5MNdk3fpMKx_xxBTcz2T11DL4XEU1H5SgHl8BsYdFsA
-id: stark_messages
-theme: stark
+  default_config_hash: YqKTtloWJ8FjLtfVNfrHaK6kVgxT67lC1cJ3j6i6WLo
+id: adminimal_theme_messages
+theme: adminimal_theme
 region: highlighted
 weight: 0
 provider: null

@@ -1,14 +1,14 @@
-uuid: be9dfbab-19ff-4437-b88c-2df4afc6781c
+uuid: cc2fd927-8249-4b10-b693-78d6a25a6780
 langcode: en
 status: true
 dependencies:
   theme:
-    - stark
+    - adminimal_theme
 _core:
-  default_config_hash: 8yptDf6WrXxeyevUz4nP5vfr7BtxQqCBMninhV2IJ1g
-id: stark_page_title
-theme: stark
-region: content
+  default_config_hash: Z3nlZUh2mSJP3apMrJWt-duS-aLyP79rcfu_0wpPmDs
+id: adminimal_theme_page_title
+theme: adminimal_theme
+region: header
 weight: -30
 provider: null
 plugin: page_title_block
