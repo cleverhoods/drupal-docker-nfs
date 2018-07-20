@@ -27,6 +27,12 @@ services:
       DB_PASSWORD: $DB_PASSWORD
       DB_NAME: $DB_NAME
       DB_DRIVER: $DB_DRIVER
+      PHP_XDEBUG: 1
+      PHP_XDEBUG_DEFAULT_ENABLE: 1
+      PHP_XDEBUG_REMOTE_AUTOSTART: 1
+      PHP_XDEBUG_REMOTE_CONNECT_BACK: 0
+      PHP_IDE_CONFIG: serverName=SF
+      PHP_XDEBUG_REMOTE_HOST: host.docker.internal # Docker 18.03+ & Linux/Mac/Win
     volumes:
       - ./web:/var/www/html/web:cached
       - ./vendor:/var/www/html/vendor:delegated
@@ -62,6 +68,22 @@ services:
       - 'traefik.port=80'
       - 'traefik.frontend.rule=HostRegexp: ${PROJECT_BASE_URL}, {subdomain:[a-z0-9.]+localhost}'
       - "traefik.frontend.priority=1"
+
+  node:
+    image: wodby/node:$NODE_TAG
+    container_name: "${PROJECT_NAME}_node"
+    working_dir: /var/www/html/web/themes/contrib/gesso
+    labels:
+      - 'traefik.backend=node'
+      - 'traefik.port=3000'
+      - 'traefik.frontend.rule=Host:front.${PROJECT_BASE_URL}'
+    expose:
+      - "3000"
+    volumes:
+      - ./web:/var/www/html/web:cached
+    command: sh -c 'yarn cache clean && yarn install && yarn run start'
+    ports:
+      - '3000:80'
 
   portainer:
     image: portainer/portainer
