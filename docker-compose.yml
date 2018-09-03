@@ -86,6 +86,10 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
+  redis:
+    container_name: "${PROJECT_NAME}_redis"
+    image: wodby/redis:$REDIS_TAG
+
 volumes:
   mariadb:
   app:
