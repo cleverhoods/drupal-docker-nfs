@@ -2,14 +2,14 @@
 /*
 ##########################################################################
 #                      PHP Benchmark Performance Script                  #
-#                         © 2010 Code24 BV                               # 
+#                         ï¿½ 2010 Code24 BV                               #
 #                                                                        #
 #  Author      : Alessandro Torrisi                                      #
 #  Company     : Code24 BV, The Netherlands                              #
 #  Date        : July 31, 2010                                           #
 #  version     : 1.0                                                     #
 #  License     : Creative Commons CC-BY license                          #
-#  Website     : http://www.php-benchmark-script.com                     #	
+#  Website     : http://www.php-benchmark-script.com                     #
 #                                                                        #
 ##########################################################################
 */
@@ -27,8 +27,8 @@
 		}
 		return number_format(microtime(true) - $time_start, 3);
 	}
-	
-	
+
+
 	function test_StringManipulation($count = 130000) {
 		$time_start = microtime(true);
 		$stringFunctions = array("addslashes", "chunk_split", "metaphone", "strip_tags", "md5", "sha1", "strtoupper", "strtolower", "strrev", "strlen", "soundex", "ord");
@@ -52,7 +52,7 @@
 		return number_format(microtime(true) - $time_start, 3);
 	}
 
-	
+
 	function test_IfElse($count = 9000000) {
 		$time_start = microtime(true);
 		for ($i=0; $i < $count; $i++) {
@@ -62,13 +62,13 @@
 			}
 		}
 		return number_format(microtime(true) - $time_start, 3);
-	}	
-	
-	
+	}
+
+
 	$total = 0;
 	$functions = get_defined_functions();
 	$line = str_pad("-",38,"-");
-	echo "<pre>$line\n|".str_pad("PHP BENCHMARK SCRIPT",36," ",STR_PAD_BOTH)."|\n$line\nStart : ".date("Y-m-d H:i:s")."\nServer : {$_SERVER['SERVER_NAME']}@{$_SERVER['SERVER_ADDR']}\nPHP version : ".PHP_VERSION."\nPlatform : ".PHP_OS. "\n$line\n";
+	echo "<pre>$line\n|".str_pad("PHP BENCHMARK SCRIPT",36," ",STR_PAD_BOTH)."|\n$line\nStart : ".date("Y-m-d H:i:s")."\nPHP version : ".PHP_VERSION."\nPlatform : ".PHP_OS. "\n$line\n";
 	foreach ($functions['user'] as $user) {
 		if (preg_match('/^test_/', $user)) {
 			$total += $result = $user();
@@ -76,5 +76,5 @@
         }
 	}
 	echo str_pad("-", 38, "-") . "\n" . str_pad("Total time:", 25) . " : " . $total ." sec.</pre>";
-	
+
 ?>
