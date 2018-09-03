@@ -1,0 +1,9 @@
+uuid: 4089873f-32cf-45d6-9c43-4fa07e17549a
+langcode: en
+status: true
+dependencies: {  }
+id: image_left_text_right
+label: 'Image left text right'
+icon_uuid: null
+description: 'Image left text right'
+behavior_plugins: {  }
