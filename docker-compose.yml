@@ -1,4 +1,4 @@
-version: "2"
+version: "3"
 
 services:
   mariadb:
@@ -12,7 +12,7 @@ services:
       MYSQL_PASSWORD: $DB_PASSWORD
     volumes:
       - ./init_mariadb:/docker-entrypoint-initdb.d
-      - mariadb:/var/lib/mysql
+      - mariadb:/var/lib/mysql:delegated
 
   php:
     build:
@@ -27,15 +27,9 @@ services:
       DB_PASSWORD: $DB_PASSWORD
       DB_NAME: $DB_NAME
       DB_DRIVER: $DB_DRIVER
-      PHP_OPCACHE_ENABLE_CLI: 1
-      PHP_XDEBUG: 1
-      PHP_XDEBUG_DEFAULT_ENABLE: 1
-      PHP_XDEBUG_REMOTE_AUTOSTART: 1
-      PHP_XDEBUG_REMOTE_CONNECT_BACK: 0
-      PHP_IDE_CONFIG: serverName=SF
-      PHP_XDEBUG_REMOTE_HOST: host.docker.internal # Docker 18.03+ & Linux/Mac/Win
+      COLUMNS: 80
     volumes:
-      - "app:/var/www/html"
+      - app:/var/www/html:rw,cached
 
   mailhog:
     image: mailhog/mailhog
@@ -47,7 +41,7 @@ services:
       - "traefik.frontend.priority=2"
 
   nginx:
-    image: wodby/drupal-nginx:$NGINX_TAG
+    image: wodby/nginx:$NGINX_TAG
     container_name: "${PROJECT_NAME}_nginx"
     depends_on:
       - php
@@ -56,8 +50,9 @@ services:
       NGINX_ERROR_LOG_LEVEL: debug
       NGINX_BACKEND_HOST: php
       NGINX_SERVER_ROOT: /var/www/html/web
+      NGINX_VHOST_PRESET: $NGINX_VHOST_PRESET
     volumes:
-      - "web:/var/www/html/web"
+        - web:/var/www/html/web:ro,cached
     labels:
       - 'traefik.backend=nginx'
       - 'traefik.port=80'
@@ -89,19 +84,23 @@ services:
   redis:
     container_name: "${PROJECT_NAME}_redis"
     image: wodby/redis:$REDIS_TAG
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+    - redis_data:/data
 
 volumes:
   mariadb:
+  redis_data:
   app:
-      driver: local
-      driver_opts:
-          type: nfs
-          o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
-          device: ":${PWD}/${APP_PATH}"
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,rw,noacl,nocto,noatime,nodiratime,soft,nolock,rsize=32768,wsize=32768,intr,tcp,nfsvers=3,actimeo=2
+      device: ":${PWD}/${APP_PATH}"
 
   web:
-      driver: local
-      driver_opts:
-          type: nfs
-          o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
-          device: ":${PWD}/${APP_PATH}/${WEB_PATH}"
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,rw,noacl,nocto,noatime,nodiratime,soft,nolock,rsize=32768,wsize=32768,intr,tcp,nfsvers=3,actimeo=2
+      device: ":${PWD}/${APP_PATH}/${WEB_PATH}"
